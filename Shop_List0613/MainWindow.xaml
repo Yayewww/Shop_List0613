@@ -5,14 +5,50 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Shop_List0613"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1480" Width="720" Closed="Window_Closed" Loaded="Window_Loaded">
-    <Grid>
-		<!--定義格子-->
+        Title="MainWindow" Height="1110" Width="540" ResizeMode="NoResize" WindowStyle="None" Closed="Window_Closed" Loaded="Window_Loaded">
+	<Grid x:Name="BaseGrid" MouseLeftButtonDown="BaseGrid_MouseLeftButtonDown">
+	<!--定義格子-->
 		<Grid.RowDefinitions>
 			<RowDefinition Height="160"></RowDefinition>
 			<RowDefinition></RowDefinition>
-			<RowDefinition  Height="320"></RowDefinition>
+			<RowDefinition  Height="240"></RowDefinition>
 		</Grid.RowDefinitions>
+		
+		<!--第一層 540x160-->
+		<Canvas  Background="#FF9BBCCB">
+			<Polygon Points="0,0 120,0 180,160 60,160 "  Fill="#FFF4E8E2" StrokeThickness="0" Canvas.Left="0"></Polygon>
+			<Polygon Points="0,0 120,0 180,160 60,160 "  Fill="#FF655A5C" StrokeThickness="0" Canvas.Left="180"></Polygon>
+			<Polygon Points="0,0 120,0 180,160 60,160 "  Fill="#FFD9D3D1" StrokeThickness="0" Canvas.Left="360"></Polygon>
+			<Polygon Points="0,0 60,0 120,160 60,160 "  Fill="#FFD9D3D1" StrokeThickness="0" Canvas.Left="30"></Polygon>
+			<Polygon Points="0,0 60,0 120,160 60,160 "  Fill="#FFF4E8E2" StrokeThickness="0" Canvas.Left="210" x:Name="CloseBtn" MouseLeftButtonDown="CloseBtn_MouseLeftButtonDown"></Polygon>
+			<Polygon Points="0,0 60,0 120,160 60,160 "  Fill="#FF655A5C" StrokeThickness="0" Canvas.Left="390"></Polygon>
+		</Canvas>
+		
+		<!--第二層 540x710-->
+		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Background="#FFD9D3D1">
+			<StackPanel Grid.Row="1" x:Name="TaskPanel">
+			</StackPanel>
+		</ScrollViewer>
+		<!--第三層 540x240-->
+		<StackPanel Grid.Row="2" Background="#FF655A5C" Orientation="Horizontal">
+			<Border x:Name="Add_Btn" Margin="40 0" Height="180" Width="180" Background="#FFF4E8E2"  CornerRadius="30" BorderThickness="5" BorderBrush="White" MouseLeftButtonDown="Add_Btn_MouseLeftButtonDown">
+				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="56" FontWeight="Bold" FontFamily="Bauhaus 93"  >ADD</TextBlock>
+			</Border>
+		</StackPanel>
+
+		<StackPanel Grid.Row="2" Width="300" HorizontalAlignment="Right">
+			<TextBlock Margin="0 70 0 0" FontSize="24" HorizontalAlignment="Center" FontFamily="Arial Black" FontWeight="Bold" >總支出
+						<TextBlock.Effect>
+				<DropShadowEffect Direction="270" Opacity="0.5" ShadowDepth="2"  ></DropShadowEffect>
+			</TextBlock.Effect>
+			</TextBlock>
+			<TextBox x:Name="Cost_Number" HorizontalAlignment="Center" FontSize="56" FontFamily="Bauhaus 93" Background="Transparent" BorderThickness="0" >0
+				<TextBox.Effect>
+					<DropShadowEffect Direction="270" Opacity="0.5" ShadowDepth="2"  ></DropShadowEffect>
+				</TextBox.Effect>
+			</TextBox>
+		</StackPanel>
+		
         
     </Grid>
 </Window>
