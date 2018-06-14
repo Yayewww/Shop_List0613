@@ -22,7 +22,7 @@ namespace Shop_List0613
     {
         //給予總和初值。
         public int Total_Cost = 0;
-        public int item_Cost = 0;
+        
 
         public MainWindow()
         {
@@ -114,7 +114,9 @@ namespace Shop_List0613
                 Total_Cost += item_Cost;
                 Cost_Number.Text = Total_Cost.ToString();
             }
-            
+            //歸零
+            Total_Cost = 0;
+
         }
 
         void CaoMoney()
@@ -145,12 +147,12 @@ namespace Shop_List0613
                 _Item.PlusAll += new EventHandler(PlusAll);
 
                 //將每一行的value 轉成int*****BUGBOYS
-                 Total_Cost += int.Parse(_Item.item_value);
-                
-                
+                int item_Cost = int.Parse(_Item.item_value);
+                Total_Cost += item_Cost;
+                Cost_Number.Text = Total_Cost.ToString();     
             }
-            
-            Cost_Number.Text = Total_Cost.ToString();
+            //歸零
+            Total_Cost = 0;
         }
 
     }
