@@ -30,7 +30,7 @@
 		</TextBox>
 
 		<!-- 支出輸入框 -->
-		<TextBox x:Name="Cost_Box" Grid.Column="2" Margin="10 0" VerticalContentAlignment="Center" BorderThickness="0"  Background="Transparent" Foreground="Khaki" FontWeight="Bold" FontSize="20" FontFamily="Bauhaus 93" KeyDown="Cost_Box_KeyDown">0
+		<TextBox x:Name="Cost_Box" Grid.Column="2" Margin="10 0" VerticalContentAlignment="Center" BorderThickness="0"  Background="Transparent" Foreground="Khaki" FontWeight="Bold" FontSize="20" FontFamily="Bauhaus 93" TextChanged="Cost_Box_TextChanged">0
 			<TextBox.Effect>
 				<DropShadowEffect Direction="270" Opacity="0.5" ShadowDepth="2"  ></DropShadowEffect>
 			</TextBox.Effect>

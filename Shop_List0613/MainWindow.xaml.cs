@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.IO; //直接抓IO 省code
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -20,8 +21,6 @@ namespace Shop_List0613
     /// </summary>
     public partial class MainWindow : Window
     {
-        //給予總和初值。
-        public int Total_Cost = 0;
         
 
         public MainWindow()
@@ -29,6 +28,7 @@ namespace Shop_List0613
             InitializeComponent();
         }
 
+        #region 視窗小操作
         //按下關閉視窗
         private void CloseBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -40,120 +40,92 @@ namespace Shop_List0613
         {
             this.DragMove();
         }
+        #endregion
 
-        //按下新增項目
+        //創建格子List
+        List<Shop_item> items = new List<Shop_item>();
+
+        //按下新增
         private void Add_Btn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            DateTime dt = DateTime.Now;
+
+            //產生物件到Panel ， 並加上當前日期
             Shop_item _Item = new Shop_item();
-            _Item.item_Content = "New";
-            _Item.DeleteItem += new EventHandler(DeleteItem);
-            _Item.PlusAll += new EventHandler(PlusAll);
-
-            //放入清單中
+            _Item.windows = this; //將此個體指向windows類別中
+            _Item.Date_Box.Text = dt.Month + "/" + dt.Day;
             TaskPanel.Children.Add(_Item);
-
-            //加總費用
-            int item_Cost = int.Parse(_Item.item_value);
-            Total_Cost += item_Cost;
-            Cost_Number.Text = Total_Cost.ToString();
+                   
+            items.Add(_Item);
         }
 
-        //輸入錢
-        private void PlusAll(object sender, EventArgs e)
+        public void UpdateC()
         {
-            CaoMoney();
+            //更新加總
+            float Total = 0;
+            foreach(Shop_item i in items)
+            {
+                int each_cost = 0;
+                Int32.TryParse(i.Cost_Box.Text, out each_cost);
+                Total += each_cost;
+            }
+            Cost_Number.Text = Total.ToString();
         }
 
-
-        // 刪除事件
-        private void DeleteItem(object sender, EventArgs e)
+        public void Destroy_item(Shop_item _Item)
         {
-            //移除項目
-            TaskPanel.Children.Remove((Shop_item)sender);
-            //算錢
-            CaoMoney();
+            //砍掉當前個體
+            items.Remove(_Item);
+            TaskPanel.Children.Remove(_Item);
+            UpdateC();
         }
 
-        //關閉視窗
+        #region 視窗開關處理函式   
         private void Window_Closed(object sender, EventArgs e)
         {
-            //將項目文字存成文字檔
-            string datas = "";
-            foreach(Shop_item _Item in TaskPanel.Children)
+            //儲存成文字格式
+            List<string> datas = new List<string>();
+            foreach (Shop_item i in items)
             {
-                datas += _Item.item_Date + "|" + _Item.item_Content+ ","+_Item.item_value + "\r\n";
-            }
+                string data = "";
 
-            System.IO.File.WriteAllText(@"C:\Buy_temp\data.txt", datas);
+                data += i.Date_Box.Text + "|" + i.Content_Box.Text + "|" + i.Cost_Box.Text;
+
+                datas.Add(data);
+            }
+            //內容存到以下路徑
+            File.WriteAllLines(@"C:\Buy_temp\data.txt", datas);
         }
 
-        //開啟視窗後讀取事件
+        
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            
-            //開檔
-            string[] lines = System.IO.File.ReadAllLines(@"C:\Buy_temp\data.txt");         
-            //讀取每一行
-            foreach (string line in lines)
+            //如果檔案存在，就讀進來
+            if (File.Exists(@"C:\Buy_temp\data.txt"))
             {
-                //用" | " 符號拆開
-                string[] parts = line.Split('|',',');//將"|"前後分成[0]跟[1]","分[2]
+                string[] datas = File.ReadAllLines(@"C:\Buy_temp\data.txt");
 
-                //建立Shop_item
-                Shop_item _Item = new Shop_item();
-                _Item.item_Date = parts[0];
-                _Item.item_Content = parts[1];
-                _Item.item_value = parts[2];
-                _Item.DeleteItem += new EventHandler(DeleteItem);
-                _Item.PlusAll += new EventHandler(PlusAll);
-                //放到清單中
-                TaskPanel.Children.Add(_Item);
+                //個別產生項目
+                foreach (string data in datas)
+                {
+                    string[] parts = data.Split('|');
+                    Shop_item _Item = new Shop_item();
 
-                //將費用文字轉換成數值
-                int item_Cost = int.Parse(_Item.item_value);
-                Total_Cost += item_Cost;
-                Cost_Number.Text = Total_Cost.ToString();
+                    _Item.Date_Box.Text = parts[0];
+                    _Item.Content_Box.Text = parts[1];
+                    _Item.Cost_Box.Text = parts[2];
+                    _Item.windows = this;//將此個體指向windows類別中
+
+                    TaskPanel.Children.Add(_Item);
+                    items.Add(_Item);
+                    
+                }
             }
-            //歸零
-            Total_Cost = 0;
+            //重更新加總
+            UpdateC();
 
         }
-
-        void CaoMoney()
-        {
-            //將項目文字存成文字檔
-            string datas = "";
-            foreach (Shop_item _Item in TaskPanel.Children)
-            {
-                datas += _Item.item_Date + "|" + _Item.item_Content + "," + _Item.item_value + "\r\n";
-            }
-
-            System.IO.File.WriteAllText(@"C:\Buy_temp\data.txt", datas);
-
-            //開檔
-            string[] lines = System.IO.File.ReadAllLines(@"C:\Buy_temp\data.txt");
-            //讀取每一行
-            foreach (string line in lines)
-            {
-                //用" | " 符號拆開
-                string[] parts = line.Split('|', ',');//將"|"前後分成[0]跟[1]","分[2]
-
-                //建立Shop_item
-                Shop_item _Item = new Shop_item();
-                _Item.item_Date = parts[0];
-                _Item.item_Content = parts[1];
-                _Item.item_value = parts[2];
-                _Item.DeleteItem += new EventHandler(DeleteItem);
-                _Item.PlusAll += new EventHandler(PlusAll);
-
-                //將每一行的value 轉成int*****BUGBOYS
-                int item_Cost = int.Parse(_Item.item_value);
-                Total_Cost += item_Cost;
-                Cost_Number.Text = Total_Cost.ToString();     
-            }
-            //歸零
-            Total_Cost = 0;
-        }
+        #endregion
 
     }
 }

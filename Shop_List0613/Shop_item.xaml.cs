@@ -20,74 +20,30 @@ namespace Shop_List0613
     /// </summary>
     public partial class Shop_item : UserControl
     {
-        public int item_coco = 0;
-
+        //公開類型 windows ，裡面有 Shop_item 的個體 。 用這個的意義是可以不用Eventhandler。 可以直接在這呼叫MainWindow中的方法
+        public MainWindow windows;
         public Shop_item()
         {
             InitializeComponent();
         }
-
-        // 自訂刪除事件
-        public event EventHandler DeleteItem;
-        //自訂算錢事件
-        public event EventHandler PlusAll;
-
-        //封裝屬性 : 控制項內容文字
-        public string item_Content
-        {
-            get
-            {
-                return Content_Box.Text;
-            }
-            set
-            {
-                Content_Box.Text = value;
-            }
-        }
-
-        //加總文字項，按下Enter執行 計算加總事件
-        private void Cost_Box_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (Cost_Box.Text != "" && e.Key == Key.Enter)
-            {
-                PlusAll(this, null);
-            }
-        }
-
-        //取得費用
-        public string item_value
-        {
-            get
-            {
-                return Cost_Box.Text;
-            }
-            set
-            {
-                Cost_Box.Text = value;
-            }
-        }
-        //封裝屬性 : 日期
-        public string item_Date
-        {
-            get
-            {
-                return Date_Box.Text;
-            }
-            set
-            {
-                Date_Box.Text = value;
-            }
-        }
         
 
-        
-        //內容文字項，按下事件
+
+        //內容文字按下 BackSpace 觸發刪除事件
         private void Content_Box_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            //當內容空白，且按下Backspace時，引發DeleteItem事件。
-            if(Content_Box.Text =="" && e.Key == Key.Back)
+            if (Content_Box.Text == "" && e.Key == Key.Back)
             {
-                DeleteItem(this, null);
+                windows.Destroy_item(this); //指向windows中的item個體
+            }
+        }
+
+        //文字改變時觸發加總事件
+        private void Cost_Box_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(windows !=null)
+            {
+                windows.UpdateC();
             }
         }
     }
